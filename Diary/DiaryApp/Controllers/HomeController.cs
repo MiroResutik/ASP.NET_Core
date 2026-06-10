@@ -16,6 +16,11 @@ namespace DiaryApp.Controllers
             return View();
         }
 
+        public IActionResult MyPage()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
