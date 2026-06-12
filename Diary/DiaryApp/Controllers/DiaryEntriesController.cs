@@ -79,30 +79,33 @@ namespace DiaryApp.Controllers
 
         }
         [HttpGet]
-        public IActionResult Delete(int? id)
+        // csharp
+        [HttpPost]
+        public IActionResult Delete(int id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
+            var entry = _db.DiaryEntries.Find(id);
+            if (entry == null) return NotFound();
 
-            DiaryEntry? diaryEntry = _db.DiaryEntries.Find(id);
-
-            if (diaryEntry == null)
-            {
-                return NotFound();
-            }
-
-            return View(diaryEntry);
+            _db.DiaryEntries.Remove(entry);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public IActionResult Delete(DiaryEntry obj)
         {
+            if (obj != null && obj.Title.Length < 3)
+            {
+                ModelState.AddModelError("Title", "Title too short");
+            }
+            if (ModelState.IsValid)
+            {
+                _db.DiaryEntries.Remove(obj);  // Update the diary entry in the database
+                _db.SaveChanges();// Saves the changes to the database
+                return RedirectToAction("Index");
+            }
 
-            _db.DiaryEntries.Remove(obj);  // Remove the diary entry from the database
-            _db.SaveChanges();// Saves the changes to the database
-            return RedirectToAction("Index");
+            return View(obj);
 
         }
     }

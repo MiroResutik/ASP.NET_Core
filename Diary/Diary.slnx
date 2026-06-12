@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="DiaryApp/DiaryApp.csproj" />
+  <Project Path="WebDiaryAPI/WebDiaryAPI.csproj" Id="8a486a29-fc09-4eda-a3eb-2f3b7adee13a" />
 </Solution>
