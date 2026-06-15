@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="DevSpot/DevSpot.csproj" Id="986ff505-5ce7-4f21-a9cd-0bf82bb8f9ce" />
   <Project Path="DiaryApp/DiaryApp.csproj" />
   <Project Path="WebDiaryAPI/WebDiaryAPI.csproj" Id="8a486a29-fc09-4eda-a3eb-2f3b7adee13a" />
 </Solution>
