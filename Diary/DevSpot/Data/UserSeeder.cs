@@ -1,5 +1,9 @@
 ﻿using DevSpot.Constants;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using DevSpot.Models;
 
 namespace DevSpot.Data
 {

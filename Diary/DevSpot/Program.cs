@@ -16,7 +16,10 @@ namespace DevSpot
             
             // dont need a confirmed account to log in (options.SignIn.RequireConfirmedAccount = false)
             // To create users
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -50,7 +53,7 @@ namespace DevSpot
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             // Enable razor page mapping
@@ -60,7 +63,7 @@ namespace DevSpot
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=JobPostings}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
