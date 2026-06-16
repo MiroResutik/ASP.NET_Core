@@ -1,4 +1,4 @@
-using DevSpot.Models;
+﻿using DevSpot.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
