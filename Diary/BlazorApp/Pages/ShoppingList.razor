@@ -16,10 +16,26 @@
     }
 </ul>
 
+<h3><strong>Shopping List with event handler</strong></h3>
+<table class="table table-sm">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Increase</th>
+    </tr>
+    @foreach (var grocery in groceries)
+    {
+        <Item GroceryItem="@grocery" OnGroceryPriceIncreased="OnGroceryPriceIncreased" />
+    }
+
+</table>
+
 <!-- Lambda expression -->
 <h1>Total is:  @groceries.Sum(grocery => grocery.Price)</h1>
+<h1>Total using oneway data binding:  (@sum)</h1>
 
 @code {
+    private float sum;
     private string title = "My Grocery List";
     private string groceryName = "";
     private float groceryPrice;
@@ -32,11 +48,23 @@
         {
             groceries.Add(new Grocery { Name = groceryName, Price = groceryPrice });
 
+            sum += groceryPrice;
             // Reset grocery input field
             groceryName = string.Empty;
             groceryPrice = 0;
 
 
         }
+        UpdateTotalAmount();
+    }
+
+    public void UpdateTotalAmount()
+    {
+        sum = groceries.Sum(x => x.Price);
+    }
+
+    public void OnGroceryPriceIncreased()
+    {
+        UpdateTotalAmount();
     }
 }
