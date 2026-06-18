@@ -1,13 +1,15 @@
 ﻿@page "/shoppingList"
+@layout ShoppingListLayout
 @using BlazorApp.Data;
 
 <PageTitle>@title</PageTitle>
 
-<h3><strong>Shopping List</strong></h3>
-
+<h3><strong>Basic Shopping List</strong></h3>
+<p>(This will not work correctly if the Shopping List with form validation is on!!!)</p>
 <input placeholder="Grocery Name" @bind="groceryName" />
 <input placeholder="Grocery Price" @bind="groceryPrice" />
 <button @onclick="AddGrocery">Add Grocery</button>
+
 
 <ul>
     @foreach(var grocery in groceries)
@@ -30,24 +32,59 @@
 
 </table>
 
+<h3><strong>Shopping List with form validation</strong></h3>
+
+<EditForm Model="@grocery" OnSubmit="AddGrocery">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <p>
+
+        <label>
+            Name: (Enter more than 15 characters)
+            <InputText @bind-Value="grocery.Name" />
+        </label>
+    </p>
+    <p>
+
+        <label>
+            Price: (Enter more than 1000)
+            <InputNumber @bind-Value="grocery.Price" />
+        </label>
+    </p>
+    <button type="submit">Add Grocery</button>
+
+</EditForm>
+<h4>-----------------------------------------------------------------------------------</h4>
 <!-- Lambda expression -->
-<h1>Total is:  @groceries.Sum(grocery => grocery.Price)</h1>
-<h1>Total using oneway data binding:  (@sum)</h1>
+<h2>Total is:  @groceries.Sum(grocery => grocery.Price)</h2>
+<h2>Total using oneway data binding:  (@sum)</h2>
 
 @code {
     private float sum;
     private string title = "My Grocery List";
     private string groceryName = "";
     private float groceryPrice;
+    private Grocery grocery = new();
 
     private List<Grocery> groceries = new();
 
     private void AddGrocery()
     {
+        // List with Form validation
+        groceries.Add(grocery);
+        grocery = new();
+
+        // Basic Shoping list and List with event handler
+        /*
         if(!string.IsNullOrWhiteSpace(groceryName)&& groceryPrice > 0)
         {
+
+            // Basic Shoping list
             groceries.Add(new Grocery { Name = groceryName, Price = groceryPrice });
 
+            
+
+            
             sum += groceryPrice;
             // Reset grocery input field
             groceryName = string.Empty;
@@ -55,6 +92,7 @@
 
 
         }
+        */
         UpdateTotalAmount();
     }
 
