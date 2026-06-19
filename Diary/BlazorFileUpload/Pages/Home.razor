@@ -6,18 +6,58 @@
     <h1>File Upload in Blazor</h1>
     <div class="form-group">
         <InputFile OnChange="OnInputFileChange" multiple />
+        <br />
+        
+        <br />
         <button class="btn btn-sm btn-success" type="button" @onclick="UploadFiles">Upload</button>
         <br />
+        <br />
+        @{
+            var progressCss = "Progress" + (dispalyProgress ? "" : "d-none");
+            var progressWidthStyle = progressPercent + "%";
+        }
+        <br />
+        <div class="@progressCss">
+            <div class="progress">
+                <div class="progress-bar"
+                     role="progressbar"
+                     style="width: @(progressPercent)%"
+                     aria-valuenow="@progressPercent"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                    @progressPercent%
+                </div>
+            </div>
+        </div>
     </div>
     <br />
     <label>@labelText</label>
     <br />
 </div>
 
+@if(previewImages.Count > 0)
+{
+    <h3>Selected Files</h3>
+    <div class="card">
+        <div class="row align-items-start">
+            @foreach (var item in previewImages)
+            {
+                <div class="col-2">
+                    <img class="rounded float-left" src="@item" width="100" height="100" />
+                </div>
+            }
+        </div>
+    </div>
+}
+
 
 @code{
 
+    private bool dispalyProgress;
+    private int progressPercent;
+
     IReadOnlyList<IBrowserFile> selectedFiles;
+    private IList<string> previewImages = new List<string>();
 
     private string labelText = "";
 
@@ -27,11 +67,18 @@
         {
             if(selectedFiles is not null && selectedFiles.Count > 0)
             {
+                var uploaded = 0;
+                dispalyProgress = true;
+
                 foreach(var file in selectedFiles)
                 {
                     await fileUpload.UploadFile(file);
-
+                    uploaded++;
+                    progressPercent = ((uploaded / selectedFiles.Count) * 100);
                 }
+
+                dispalyProgress = false;
+
                 labelText = $"Upload of {selectedFiles.Count} files succesfull!!!";
             }
         }
@@ -41,9 +88,14 @@
             labelText = $"Upload Faild due to {ex.Message}";
         }
     }
-    private void OnInputFileChange(InputFileChangeEventArgs e)
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         selectedFiles = new List<IBrowserFile>();
         selectedFiles = e.GetMultipleFiles();
+        foreach (var file in selectedFiles)
+        {
+            var imageUrl = await fileUpload.GeneratePreviewUrl(file);
+            previewImages.Add(imageUrl);
+        }
     }
 }
