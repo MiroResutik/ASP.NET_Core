@@ -52,6 +52,7 @@ namespace BlazorFileUpload.Services
         public async Task<List<string>> GetUploadedFiles()
         {
             var base64Urls = new List<string>();
+            //downloadPath - needs fixing
             var downloadPath = Path.Combine(_webHostEnviroment.Environment, "uploads");
             var files = Directory.GetFiles(downloadPath);
 
