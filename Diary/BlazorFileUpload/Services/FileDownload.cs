@@ -21,24 +21,24 @@ namespace BlazorFileUpload.Services
         {
             private readonly IWebHostEnvironment _env;
 
-            public UploadController(IWebHostEnvironment env)
-            {
-                _env = env;
-            }
+            //public UploadController(IWebHostEnvironment env)
+            //{
+            //    _env = env;
+            //}
 
-            [HttpPost]
-            public async Task<IActionResult> Upload(IFormFile file)
-            {
-                var path = Path.Combine(
-                    _env.WebRootPath,
-                    "uploads",
-                    file.FileName);
+            //[HttpPost]
+            //public async Task<IActionResult> Upload(IFormFile file)
+            //{
+            //    var path = Path.Combine(
+            //        _env.WebRootPath,
+            //        "uploads",
+            //        file.FileName);
 
-                using var stream = new FileStream(path, FileMode.Create);
-                await file.CopyToAsync(stream);
+            //    using var stream = new FileStream(path, FileMode.Create);
+            //    await file.CopyToAsync(stream);
 
-                return Ok();
-            }
+            //    return Ok();
+            //}
         }
         private IWebAssemblyHostEnvironment _webHostEnviroment;
 
