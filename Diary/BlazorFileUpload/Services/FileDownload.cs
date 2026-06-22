@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.JSInterop;
 using System.Buffers.Text;
 
 namespace BlazorFileUpload.Services
@@ -14,12 +17,43 @@ namespace BlazorFileUpload.Services
     }
     public class FileDownload : IFileDownload
     {
+        public class UploadController : ControllerBase
+        {
+            private readonly IWebHostEnvironment _env;
+
+            public UploadController(IWebHostEnvironment env)
+            {
+                _env = env;
+            }
+
+            [HttpPost]
+            public async Task<IActionResult> Upload(IFormFile file)
+            {
+                var path = Path.Combine(
+                    _env.WebRootPath,
+                    "uploads",
+                    file.FileName);
+
+                using var stream = new FileStream(path, FileMode.Create);
+                await file.CopyToAsync(stream);
+
+                return Ok();
+            }
+        }
         private IWebAssemblyHostEnvironment _webHostEnviroment;
+
+        private readonly IJSRuntime _js;
+
+        //public FileDownload(IWebHostEnvironment webHostEnvironment, IJSRuntime js)
+        //{
+        //    _webHostEnviroment = webHostEnvironment;
+        //    _js = js;
+        //}
         public async Task<List<string>> GetUploadedFiles()
         {
             var base64Urls = new List<string>();
-            var uploadPath = Path.Combine(_webHostEnviroment.BaseAddress, "uploads");
-            var files = Directory.GetFiles(uploadPath);
+            var downloadPath = Path.Combine(_webHostEnviroment.Environment, "uploads");
+            var files = Directory.GetFiles(downloadPath);
 
             if (files is not null && files.Length > 0)
             {
@@ -40,9 +74,9 @@ namespace BlazorFileUpload.Services
             return base64Urls;
         }
 
-        public Task DownloadFile(string url)
+        public async Task DownloadFile(string url)
         {
-            throw new NotImplementedException();
+            await _js.InvokeVoidAsync("downloadFile", url);
         }
         private string GetMimeTypeForFileExtension(string filePath)
         {
